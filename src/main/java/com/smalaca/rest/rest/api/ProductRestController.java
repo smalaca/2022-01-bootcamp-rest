@@ -1,24 +1,38 @@
 package com.smalaca.rest.rest.api;
 
+import com.smalaca.rest.domain.product.Product;
+import com.smalaca.rest.domain.product.ProductDto;
+import com.smalaca.rest.domain.product.ProductRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.stream.StreamSupport;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/products")
 public class ProductRestController {
+    private final ProductRepository repository;
+
+    public ProductRestController(ProductRepository repository) {
+        this.repository = repository;
+    }
+
     @GetMapping
     public List<ProductDto> findAll() {
-        return Arrays.asList(
-                new ProductDto(1L, UUID.randomUUID().toString(), "Coffee", BigDecimal.valueOf(12.34), "The best product of the world", 1L),
-                new ProductDto(2L, UUID.randomUUID().toString(), "Tea", BigDecimal.valueOf(10.01), "Worth to drink from time to time", 1L),
-                new ProductDto(3L, UUID.randomUUID().toString(), "Pillow", BigDecimal.valueOf(12.34), "You need it when you want to sleep", 2L),
-                new ProductDto(4L, UUID.randomUUID().toString(), "Light saber", BigDecimal.valueOf(12.34), "You have to have it", 3L)
-        );
+        return StreamSupport.stream(repository.findAll().spliterator(), false)
+                .map(Product::asDto)
+                .collect(toList());
+    }
+
+    @PostMapping
+    public Long create(@RequestBody ProductDto dto) {
+        Product product = new Product(dto.getSerialNumber(), dto.getName(), dto.getPrice(), dto.getDescription(), dto.getShopId());
+        return repository.save(product).getId();
     }
 }
