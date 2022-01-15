@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,9 +20,14 @@ class ToDoItemRestControllerTest {
 
     @Test
     void shouldReturnCreateToDoItem() {
-        Long id = client.postForObject(URL, new ToDoItemDtoTest("Eat lunch", "not too big", "bruce banner"), Long.class);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("fieldOne", "valueOne");
+        httpHeaders.put("fieldTwo", Arrays.asList("One", "Two", "Three"));
+        HttpEntity<ToDoItemDtoTest> entity = new HttpEntity<>(new ToDoItemDtoTest("Eat lunch", "not too big", "bruce banner"), httpHeaders);
 
-        ToDoItemDtoTest actual = client.getForObject(URL + id, ToDoItemDtoTest.class);
+        ResponseEntity<Long> response = client.exchange(URL, HttpMethod.POST, entity, Long.class);
+
+        ToDoItemDtoTest actual = client.getForObject(URL + response.getBody(), ToDoItemDtoTest.class);
 
         System.out.println(actual);
     }

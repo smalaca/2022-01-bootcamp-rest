@@ -3,6 +3,7 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,10 +69,11 @@ public class ToDoItemRestController {
     }
 
     @PostMapping
-    public Long create(@RequestBody ToDoItemDto dto, @RequestHeader Map<String, String> headers) {
+    public Long create(@RequestBody ToDoItemDto dto, @RequestHeader HttpHeaders headers) {
         String headersAsString = headers.entrySet().stream()
                 .map(entry -> entry.getKey() + ":" + entry.getValue())
                 .collect(joining(";"));
+
         ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee(), headersAsString);
         ToDoItem saved = repository.save(toDoItem);
 
