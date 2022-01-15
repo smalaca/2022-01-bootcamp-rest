@@ -110,12 +110,11 @@ public class ToDoItemRestController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public void deleteById(@PathVariable Long id) {
         if (repository.existsById(id)) {
             repository.deleteById(id);
-            return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.notFound().build();
+            throw new ToDoItemNotFoundException(id);
         }
     }
 
