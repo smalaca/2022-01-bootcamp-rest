@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloRestController {
     @GetMapping({"/", "/{name}"})
     public String sayHi(@PathVariable(required = false) String name) {
-        return "Hi " + name + "!";
+        if (name == null) {
+            return "Hi you!";
+        } else {
+            return "Hi " + name + "!";
+        }
     }
 }
