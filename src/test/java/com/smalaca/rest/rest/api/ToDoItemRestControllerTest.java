@@ -65,7 +65,7 @@ class ToDoItemRestControllerTest {
         client.postForObject(URL, new ToDoItemDtoTest("Help people", "during night", "dickgrason"), Long.class);
         Long id3 = client.postForObject(URL, new ToDoItemDtoTest("Help people", "during night", "brucewayne"), Long.class);
 
-        ToDoItemDtoTest[] actual = client.getForObject(URL + "by-ids?ids=" + id1 + "," + id2 + "," + id3, ToDoItemDtoTest[].class);
+        ToDoItemDtoTest[] actual = client.getForObject(URL + "by-ids?ids=" + id1 + "&ids=" + id2 + "&ids=" + id3, ToDoItemDtoTest[].class);
 
         Arrays.asList(actual).forEach(System.out::println);
     }

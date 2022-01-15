@@ -3,6 +3,7 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +31,11 @@ public class ToDoItemRestController {
     }
 
     @GetMapping("/by-ids")
-    public List<ToDoItemDto> findAll(@RequestParam List<Long> ids) {
+    public List<ToDoItemDto> findAll(@RequestParam MultiValueMap<String, String> params) {
+        List<Long> ids = params.get("ids")
+                .stream()
+                .map(Long::parseLong)
+                .collect(toList());
         List<ToDoItem> found = repository.findAllByIdIn(ids);
 
         return found.stream()
