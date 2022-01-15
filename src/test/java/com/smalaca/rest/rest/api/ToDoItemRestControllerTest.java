@@ -43,12 +43,15 @@ class ToDoItemRestControllerTest {
     }
 
     @Test
-    void shouldReturnToDoItemsByName() {
-        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for breakfast", "clark kent"), Long.class);
-        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for lunch", "clark kent"), Long.class);
-        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for dinner", "clark kent"), Long.class);
+    void shouldReturnToDoItemsByNameOrAssignee() {
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for breakfast", "clarkkent"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for lunch", "clarkkent"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for dinner", "dickgrason"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Training", "let's practice", "dickgrason"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Help people", "during night", "dickgrason"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Help people", "during night", "brucewayne"), Long.class);
 
-        ToDoItemDtoTest[] actual = client.getForObject(URL + "?name=Eat", ToDoItemDtoTest[].class);
+        ToDoItemDtoTest[] actual = client.getForObject(URL + "?name=Eat&assignee=dickgrason", ToDoItemDtoTest[].class);
 
         Arrays.asList(actual).forEach(System.out::println);
     }

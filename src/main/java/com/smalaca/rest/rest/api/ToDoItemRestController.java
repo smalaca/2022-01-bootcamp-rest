@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -30,15 +30,15 @@ public class ToDoItemRestController {
     }
 
     @GetMapping
-    public List<ToDoItemDto> findAll(@RequestParam Optional<String> name) {
-        if (name.isEmpty()) {
+    public List<ToDoItemDto> findAll(@RequestParam Map<String, String> params) {
+        if (params.isEmpty()) {
             Iterable<ToDoItem> found = repository.findAll();
 
             return asStream(found)
                     .map(ToDoItem::asDto)
                     .collect(toList());
         } else {
-            List<ToDoItem> found = repository.findAllByName(name.get());
+            List<ToDoItem> found = repository.findAllByNameOrAssignee(params.get("name"), params.get("assignee"));
 
             return found.stream()
                     .map(ToDoItem::asDto)

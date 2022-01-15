@@ -7,5 +7,5 @@ import java.util.List;
 
 @Repository
 public interface ToDoItemRepository extends CrudRepository<ToDoItem, Long> {
-    List<ToDoItem> findAllByName(String name);
+    List<ToDoItem> findAllByNameOrAssignee(String name, String assignee);
 }
