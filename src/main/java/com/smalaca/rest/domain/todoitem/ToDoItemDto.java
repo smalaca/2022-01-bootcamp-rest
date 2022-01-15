@@ -1,4 +1,4 @@
-package com.smalaca.rest.rest.api;
+package com.smalaca.rest.domain.todoitem;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
