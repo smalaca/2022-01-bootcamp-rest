@@ -62,6 +62,41 @@ class ProductRestControllerTest {
         Arrays.asList(actual).forEach(System.out::println);
     }
 
+    @Test
+    void shouldReturnAllProductsForGivenShop() {
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Coffee", BigDecimal.valueOf(12.34), "The best product of the world", 21L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Tea", BigDecimal.valueOf(10.01), "Worth to drink from time to time", 21L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Pillow", BigDecimal.valueOf(12.34), "You need it when you want to sleep", 42L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Light saber", BigDecimal.valueOf(12.34), "You have to have it", 3L), Long.class);
+
+        ProductTestDto[] actual = client.getForObject(PRODUCTS_RESOURCE + "?shopIds=21&shopIds=42", ProductTestDto[].class);
+
+        Arrays.asList(actual).forEach(System.out::println);
+    }
+
+    @Test
+    void shouldReturnAllProductsByNameOrSerialNumber() {
+        String serialNumber = UUID.randomUUID().toString();
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(serialNumber, "Coffee", BigDecimal.valueOf(12.34), "The best product of the world", 1L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Tea", BigDecimal.valueOf(10.01), "Worth to drink from time to time", 1L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "Pillow", BigDecimal.valueOf(12.34), "You need it when you want to sleep", 2L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "LightSaber", BigDecimal.valueOf(12.34), "You have to have it", 3L), Long.class);
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(UUID.randomUUID().toString(), "LightSaber", BigDecimal.valueOf(12.34), "this is red one", 3L), Long.class);
+
+        ProductTestDto[] actual = client.getForObject(PRODUCTS_RESOURCE + "?name=LightSaber&serialNumber=" + serialNumber, ProductTestDto[].class);
+
+        Arrays.asList(actual).forEach(System.out::println);
+    }
+
     @Getter
     @NoArgsConstructor
     @ToString

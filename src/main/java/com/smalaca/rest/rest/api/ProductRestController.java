@@ -3,6 +3,7 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.product.Product;
 import com.smalaca.rest.domain.product.ProductDto;
 import com.smalaca.rest.domain.product.ProductRepository;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,10 +29,21 @@ public class ProductRestController {
     }
 
     @GetMapping
-    public List<ProductDto> findAll() {
-        return StreamSupport.stream(repository.findAll().spliterator(), false)
-                .map(Product::asDto)
-                .collect(toList());
+    public List<ProductDto> findAll(@RequestParam MultiValueMap<String, String> params) {
+        if (params.isEmpty()) {
+            return StreamSupport.stream(repository.findAll().spliterator(), false)
+                    .map(Product::asDto)
+                    .collect(toList());
+        } else if (params.containsKey("shopIds")) {
+            List<Long> shopIds = params.get("shopIds").stream().map(Long::parseLong).collect(toList());
+            return repository.findAllByShopIdIn(shopIds).stream()
+                    .map(Product::asDto)
+                    .collect(toList());
+        } else {
+            return repository.findAllByNameOrSerialNumber(params.getFirst("name"), params.getFirst("serialNumber")).stream()
+                    .map(Product::asDto)
+                    .collect(toList());
+        }
     }
 
     @PostMapping
