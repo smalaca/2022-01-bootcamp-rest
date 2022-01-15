@@ -36,4 +36,10 @@ public class Product {
     public Long getId() {
         return id;
     }
+
+    public void update(ProductDto dto) {
+        price = dto.getPrice();
+        description = dto.getDescription();
+        shopId = dto.getShopId();
+    }
 }
