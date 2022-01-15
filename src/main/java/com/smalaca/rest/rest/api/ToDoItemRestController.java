@@ -29,6 +29,15 @@ public class ToDoItemRestController {
         this.repository = repository;
     }
 
+    @GetMapping("/by-ids")
+    public List<ToDoItemDto> findAll(@RequestParam List<Long> ids) {
+        List<ToDoItem> found = repository.findAllByIdIn(ids);
+
+        return found.stream()
+                .map(ToDoItem::asDto)
+                .collect(toList());
+    }
+
     @GetMapping
     public List<ToDoItemDto> findAll(@RequestParam Map<String, String> params) {
         if (params.isEmpty()) {
