@@ -4,6 +4,7 @@ import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +36,13 @@ public class ToDoItemRestController {
 
     private Stream<ToDoItem> asStream(Iterable<ToDoItem> found) {
         return StreamSupport.stream(found.spliterator(), false);
+    }
+
+    @GetMapping("/{id}")
+    public ToDoItemDto findById(@PathVariable Long id) {
+        ToDoItem toDoItem = repository.findById(id).get();
+
+        return toDoItem.asDto();
     }
 
     @PostMapping

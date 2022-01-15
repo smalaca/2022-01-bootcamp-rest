@@ -9,8 +9,17 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 
 class ToDoItemRestControllerTest {
-    private static final String URL = "http://localhost:8013/todoitems";
+    private static final String URL = "http://localhost:8013/todoitems/";
     private final RestTemplate client = new RestTemplate();
+
+    @Test
+    void shouldReturnCreateToDoItem() {
+        Long id = client.postForObject(URL, new ToDoItemDtoTest("Eat lunch", "not too big", "bruce banner"), Long.class);
+
+        ToDoItemDtoTest actual = client.getForObject(URL + id, ToDoItemDtoTest.class);
+
+        System.out.println(actual);
+    }
 
     @Test
     void shouldReturnToDoItems() {
