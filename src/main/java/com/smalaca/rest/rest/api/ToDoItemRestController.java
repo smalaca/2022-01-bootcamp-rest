@@ -3,6 +3,7 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +39,14 @@ public class ToDoItemRestController {
         return StreamSupport.stream(found.spliterator(), false);
     }
 
+    @PostMapping
+    public Long create(@RequestBody ToDoItemDto dto) {
+        ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee());
+        ToDoItem saved = repository.save(toDoItem);
+
+        return saved.getId();
+    }
+
     @GetMapping("/{id}")
     public ToDoItemDto findById(@PathVariable Long id) {
         ToDoItem toDoItem = repository.findById(id).get();
@@ -45,11 +54,8 @@ public class ToDoItemRestController {
         return toDoItem.asDto();
     }
 
-    @PostMapping
-    public Long create(@RequestBody ToDoItemDto dto) {
-        ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee());
-        ToDoItem saved = repository.save(toDoItem);
-
-        return saved.getId();
+    @DeleteMapping("{id}")
+    public void deleteById(@PathVariable Long id) {
+        repository.deleteById(id);
     }
 }

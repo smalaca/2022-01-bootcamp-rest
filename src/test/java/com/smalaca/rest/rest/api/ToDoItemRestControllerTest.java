@@ -32,6 +32,16 @@ class ToDoItemRestControllerTest {
         Arrays.asList(actual).forEach(System.out::println);
     }
 
+    @Test
+    void shouldDeleteToDoItem() {
+        Long id = client.postForObject(URL, new ToDoItemDtoTest("Drink water", "every day", "Aqua man"), Long.class);
+
+        client.delete(URL + id);
+
+        ToDoItemDtoTest[] actual = client.getForObject(URL, ToDoItemDtoTest[].class);
+        Arrays.asList(actual).forEach(System.out::println);
+    }
+
     @Getter
     @ToString
     @NoArgsConstructor
