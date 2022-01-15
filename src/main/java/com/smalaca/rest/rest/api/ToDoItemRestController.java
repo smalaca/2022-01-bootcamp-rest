@@ -17,11 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -69,13 +73,28 @@ public class ToDoItemRestController {
     }
 
     @PostMapping
-    public Long create(@RequestBody ToDoItemDto dto, @RequestHeader HttpHeaders headers) {
+    public Long create(
+            @RequestBody ToDoItemDto dto, @RequestHeader HttpHeaders headers,
+            HttpServletRequest request, HttpServletResponse response) {
         String headersAsString = headers.entrySet().stream()
                 .map(entry -> entry.getKey() + ":" + entry.getValue())
                 .collect(joining(";"));
 
-        ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee(), headersAsString);
+        String cookies = "";
+        if (request.getCookies() != null) {
+            cookies = asList(request.getCookies()).stream()
+                    .map(cookie -> cookie.getName() + ": " + cookie.getValue())
+                    .collect(joining(";"));
+        }
+
+        String statisticsData = "COOKIE: " + cookies;
+
+        ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee(), statisticsData);
         ToDoItem saved = repository.save(toDoItem);
+
+        Cookie cookie = new Cookie("my_cookie", "cookie_monster");
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
 
         return saved.getId();
     }

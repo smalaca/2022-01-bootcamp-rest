@@ -23,6 +23,7 @@ class ToDoItemRestControllerTest {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("fieldOne", "valueOne");
         httpHeaders.put("fieldTwo", Arrays.asList("One", "Two", "Three"));
+        httpHeaders.put("Cookie", Arrays.asList("name=Steve", "last=Rogers"));
         HttpEntity<ToDoItemDtoTest> entity = new HttpEntity<>(new ToDoItemDtoTest("Eat lunch", "not too big", "bruce banner"), httpHeaders);
 
         ResponseEntity<Long> response = client.exchange(URL, HttpMethod.POST, entity, Long.class);
