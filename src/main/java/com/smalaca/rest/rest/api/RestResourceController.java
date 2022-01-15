@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/rest")
 public class RestResourceController {
@@ -14,7 +16,7 @@ public class RestResourceController {
     }
 
     @GetMapping({"/lucky-number/{login}/{luckyNumber}", "/lucky-number/{login}"})
-    public String luckyNumber(@PathVariable String login, @PathVariable(required = false) Integer luckyNumber) {
-        return "Cześć, jestem " + login + ". Moja szczęśliwa liczba to: " + (luckyNumber == null ? 13 : luckyNumber);
+    public String luckyNumber(@PathVariable String login, @PathVariable Optional<Integer> luckyNumber) {
+        return "Cześć, jestem " + login + ". Moja szczęśliwa liczba to: " + luckyNumber.orElse(13);
     }
 }
