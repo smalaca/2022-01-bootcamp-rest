@@ -16,4 +16,6 @@ public class ProductDto {
     private BigDecimal price;
     private String description;
     private long shopId;
+    private String creationHost;
+    private String creationUser;
 }

@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -15,6 +19,20 @@ import java.util.UUID;
 class ProductRestControllerTest {
     private static final String PRODUCTS_RESOURCE = "http://localhost:8013/products/";
     private final RestTemplate client = new RestTemplate();
+
+    @Test
+    void shouldCreateProductWithHeaderValue() {
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("username", "doctorstrange");
+        HttpEntity<ProductTestDto> entity = new HttpEntity<>(
+                new ProductTestDto(UUID.randomUUID().toString(), "Orange juice", BigDecimal.valueOf(5.43), "It's orange and it's good", 1L), httpHeaders);
+
+        ResponseEntity<Long> response = client.exchange(PRODUCTS_RESOURCE, HttpMethod.POST, entity, Long.class);
+
+        ProductTestDto actual = client.getForObject(PRODUCTS_RESOURCE + response.getBody(), ProductTestDto.class);
+
+        System.out.println(actual);
+    }
 
     @Test
     void shouldCreateProduct() {
@@ -144,6 +162,8 @@ class ProductRestControllerTest {
         private BigDecimal price;
         private String description;
         private long shopId;
+        private String creationHost;
+        private String creationUser;
 
         ProductTestDto(String serialNumber, String name, BigDecimal price, String description, long shopId) {
             this.serialNumber = serialNumber;
