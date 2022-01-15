@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/invitations")
 public class HelloRestController {
-    @GetMapping("/{name}")
-    public String sayHi(@PathVariable String name) {
+    @GetMapping({"/", "/{name}"})
+    public String sayHi(@PathVariable(required = false) String name) {
         return "Hi " + name + "!";
     }
 }
