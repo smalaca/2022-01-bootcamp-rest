@@ -43,6 +43,17 @@ class ToDoItemRestControllerTest {
     }
 
     @Test
+    void shouldReturnToDoItemsByName() {
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for breakfast", "clark kent"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for lunch", "clark kent"), Long.class);
+        client.postForObject(URL, new ToDoItemDtoTest("Eat", "time for dinner", "clark kent"), Long.class);
+
+        ToDoItemDtoTest[] actual = client.getForObject(URL + "?name=Eat", ToDoItemDtoTest[].class);
+
+        Arrays.asList(actual).forEach(System.out::println);
+    }
+
+    @Test
     void shouldDeleteToDoItem() {
         Long id = client.postForObject(URL, new ToDoItemDtoTest("Drink water", "every day", "Aqua man"), Long.class);
 

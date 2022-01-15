@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -28,12 +30,20 @@ public class ToDoItemRestController {
     }
 
     @GetMapping
-    public List<ToDoItemDto> findAll() {
-        Iterable<ToDoItem> found = repository.findAll();
+    public List<ToDoItemDto> findAll(@RequestParam Optional<String> name) {
+        if (name.isEmpty()) {
+            Iterable<ToDoItem> found = repository.findAll();
 
-        return asStream(found)
-                .map(ToDoItem::asDto)
-                .collect(toList());
+            return asStream(found)
+                    .map(ToDoItem::asDto)
+                    .collect(toList());
+        } else {
+            List<ToDoItem> found = repository.findAllByName(name.get());
+
+            return found.stream()
+                    .map(ToDoItem::asDto)
+                    .collect(toList());
+        }
     }
 
     private Stream<ToDoItem> asStream(Iterable<ToDoItem> found) {
