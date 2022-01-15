@@ -3,6 +3,7 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,15 +74,20 @@ public class ToDoItemRestController {
     }
 
     @GetMapping("/{id}")
-    public ToDoItemDto findById(@PathVariable Long id) {
+    public ResponseEntity<ToDoItemDto> findById(@PathVariable Long id) {
         ToDoItem toDoItem = repository.findById(id).get();
 
-        return toDoItem.asDto();
+        return ResponseEntity.ok(toDoItem.asDto());
     }
 
     @DeleteMapping("{id}")
-    public void deleteById(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("{id}")
