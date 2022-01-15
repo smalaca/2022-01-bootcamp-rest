@@ -10,4 +10,6 @@ public interface ProductRepository extends CrudRepository<Product, Long> {
     List<Product> findAllByNameOrSerialNumber(String name, String serialNumber);
 
     List<Product> findAllByShopIdIn(List<Long> shopIds);
+
+    boolean existsBySerialNumber(String serialNumber);
 }

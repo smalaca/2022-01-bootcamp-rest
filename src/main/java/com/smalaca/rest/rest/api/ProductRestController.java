@@ -3,6 +3,8 @@ package com.smalaca.rest.rest.api;
 import com.smalaca.rest.domain.product.Product;
 import com.smalaca.rest.domain.product.ProductDto;
 import com.smalaca.rest.domain.product.ProductRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,8 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/products")
@@ -47,19 +51,33 @@ public class ProductRestController {
     }
 
     @PostMapping
-    public Long create(@RequestBody ProductDto dto) {
+    public ResponseEntity<Long> create(@RequestBody ProductDto dto) {
+        if (repository.existsBySerialNumber(dto.getSerialNumber())) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
         Product product = new Product(dto.getSerialNumber(), dto.getName(), dto.getPrice(), dto.getDescription(), dto.getShopId());
-        return repository.save(product).getId();
+        Long id = repository.save(product).getId();
+        return new ResponseEntity(id, HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
-    public ProductDto findById(@PathVariable Long id) {
-        return repository.findById(id).get().asDto();
+    public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            ProductDto productDto = repository.findById(id).get().asDto();
+            return ok(productDto);
+        } else {
+            return notFound().build();
+        }
     }
 
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Long id) {
-        repository.deleteById(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            return ok().build();
+        } else {
+            return notFound().build();
+        }
     }
 
     @PutMapping("{id}")

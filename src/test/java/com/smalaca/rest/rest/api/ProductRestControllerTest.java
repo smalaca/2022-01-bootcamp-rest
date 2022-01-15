@@ -3,7 +3,9 @@ package com.smalaca.rest.rest.api;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
@@ -25,6 +27,31 @@ class ProductRestControllerTest {
     }
 
     @Test
+    void shouldCreateProductWithTheSameSerialNumber() {
+        String serialNumber = UUID.randomUUID().toString();
+        client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(serialNumber, "Orange juice", BigDecimal.valueOf(5.43), "It's orange and it's good", 1L), Long.class);
+
+        try {
+            client.postForObject(PRODUCTS_RESOURCE,
+                new ProductTestDto(serialNumber, "Orange juice", BigDecimal.valueOf(5.43), "It's orange and it's good", 1L), Long.class);
+        } catch (HttpClientErrorException exception) {
+            System.out.println("-----------------------");
+            System.out.println(exception.getStatusCode());
+        }
+    }
+
+    @Test
+    void shouldFindNotExistingProduct() {
+        try {
+            client.getForObject(PRODUCTS_RESOURCE + RandomUtils.nextLong(), ProductTestDto.class);
+        } catch (HttpClientErrorException exception) {
+            System.out.println("-----------------------");
+            System.out.println(exception.getStatusCode());
+        }
+    }
+
+    @Test
     void shouldDeleteProduct() {
         Long id = client.postForObject(PRODUCTS_RESOURCE,
                 new ProductTestDto(UUID.randomUUID().toString(), "Something", BigDecimal.valueOf(99.88), "No one knows", 13L), Long.class);
@@ -33,6 +60,16 @@ class ProductRestControllerTest {
 
         ProductTestDto[] actual = client.getForObject(PRODUCTS_RESOURCE, ProductTestDto[].class);
         Arrays.asList(actual).forEach(System.out::println);
+    }
+
+    @Test
+    void shouldDeleteNotExistingProduct() {
+        try {
+            client.delete(PRODUCTS_RESOURCE + RandomUtils.nextLong());
+        } catch (HttpClientErrorException exception) {
+            System.out.println("-----------------------");
+            System.out.println(exception.getStatusCode());
+        }
     }
 
     @Test
