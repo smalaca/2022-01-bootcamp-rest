@@ -22,6 +22,16 @@ class ToDoItemRestControllerTest {
     }
 
     @Test
+    void shouldReturnModifiedToDoItem() {
+        Long id = client.postForObject(URL, new ToDoItemDtoTest("Talk with people", "going outside is good for you", "bruce wayne"), Long.class);
+        client.put(URL + id, new ToDoItemDtoTest("not too much", "bruce banner"));
+
+        ToDoItemDtoTest actual = client.getForObject(URL + id, ToDoItemDtoTest.class);
+
+        System.out.println(actual);
+    }
+
+    @Test
     void shouldReturnToDoItems() {
         client.postForObject(URL, new ToDoItemDtoTest("REST testing", "use RestTemplate and Spring", "steve rogers"), Long.class);
         client.postForObject(URL, new ToDoItemDtoTest("Create REST resources", "@RestController - remember about annotation", "wanda maximoff"), Long.class);
@@ -53,6 +63,11 @@ class ToDoItemRestControllerTest {
 
         ToDoItemDtoTest(String name, String notes, String assignee) {
             this.name = name;
+            this.notes = notes;
+            this.assignee = assignee;
+        }
+
+        ToDoItemDtoTest(String notes, String assignee) {
             this.notes = notes;
             this.assignee = assignee;
         }

@@ -31,4 +31,9 @@ public class ToDoItem {
     public Long getId() {
         return id;
     }
+
+    public void update(ToDoItemDto dto) {
+        notes = dto.getNotes();
+        assignee = dto.getAssignee();
+    }
 }
