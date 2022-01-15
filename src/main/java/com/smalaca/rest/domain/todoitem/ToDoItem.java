@@ -27,4 +27,8 @@ public class ToDoItem {
     public ToDoItemDto asDto() {
         return new ToDoItemDto(id, name, notes, assignee);
     }
+
+    public Long getId() {
+        return id;
+    }
 }

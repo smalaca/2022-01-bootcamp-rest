@@ -4,6 +4,8 @@ import com.smalaca.rest.domain.todoitem.ToDoItem;
 import com.smalaca.rest.domain.todoitem.ToDoItemDto;
 import com.smalaca.rest.domain.todoitem.ToDoItemRepository;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -33,5 +35,13 @@ public class ToDoItemRestController {
 
     private Stream<ToDoItem> asStream(Iterable<ToDoItem> found) {
         return StreamSupport.stream(found.spliterator(), false);
+    }
+
+    @PostMapping
+    public Long create(@RequestBody ToDoItemDto dto) {
+        ToDoItem toDoItem = new ToDoItem(dto.getName(), dto.getNotes(), dto.getAssignee());
+        ToDoItem saved = repository.save(toDoItem);
+
+        return saved.getId();
     }
 }
