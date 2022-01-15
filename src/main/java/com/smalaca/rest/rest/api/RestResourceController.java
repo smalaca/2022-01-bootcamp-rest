@@ -13,8 +13,8 @@ public class RestResourceController {
         return "REST is fun!";
     }
 
-    @GetMapping("/lucky-number/{login}/{luckyNumber}")
-    public String luckyNumber(@PathVariable String login, @PathVariable int luckyNumber) {
-        return "Cześć, jestem " + login + ". Moja szczęśliwa liczba to: " + luckyNumber;
+    @GetMapping({"/lucky-number/{login}/{luckyNumber}", "/lucky-number/{login}"})
+    public String luckyNumber(@PathVariable String login, @PathVariable(required = false) Integer luckyNumber) {
+        return "Cześć, jestem " + login + ". Moja szczęśliwa liczba to: " + (luckyNumber == null ? 13 : luckyNumber);
     }
 }
