@@ -16,4 +16,5 @@ public class ToDoItemDto {
     private String name;
     private String notes;
     private String assignee;
+    private String headers;
 }

@@ -100,6 +100,7 @@ class ToDoItemRestControllerTest {
         private String name;
         private String notes;
         private String assignee;
+        private String headers;
 
         ToDoItemDtoTest(String name, String notes, String assignee) {
             this.name = name;

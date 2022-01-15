@@ -17,15 +17,17 @@ public class ToDoItem {
     private String name;
     private String notes;
     private String assignee;
+    private String headers;
 
-    public ToDoItem(String name, String notes, String assignee) {
+    public ToDoItem(String name, String notes, String assignee, String headers) {
         this.name = name;
         this.notes = notes;
         this.assignee = assignee;
+        this.headers = headers;
     }
 
     public ToDoItemDto asDto() {
-        return new ToDoItemDto(id, name, notes, assignee);
+        return new ToDoItemDto(id, name, notes, assignee, headers);
     }
 
     public Long getId() {
